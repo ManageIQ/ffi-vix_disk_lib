@@ -1,18 +1,19 @@
-require_relative '../ffi-vixdisklib'
+require 'ffi-vix_disk_lib'
+require 'logger'
+require 'ffi-vix_disk_lib/safe_connect_params'
+require 'ffi-vix_disk_lib/safe_create_params'
+require 'ffi-vix_disk_lib/disk_info'
 
-class VixDiskLibError < RuntimeError
+unless defined? $vix_disk_lib_log
+  $vix_disk_lib_log = Logger.new(STDOUT)
+  $vix_disk_lib_log.level = Logger::Severity::WARN
 end
 
-# class FFI::VixDiskLib::Raw
-  # include ::FFI::VixDiskLib
 module FFI
   module VixDiskLib
     module ApiWrapper
-      extend FFI::VixDiskLib::API
-      VixDiskLib = FFI::VixDiskLib::API
-      require_relative 'safe_connect_params'
-      require_relative 'safe_create_params'
-      require_relative 'disk_info'
+      extend API
+
       attr_reader :info_logger, :warn_logger, :error_logger
 
       def self.attach(parent_disk_handle, child_disk_handle)
@@ -187,8 +188,7 @@ module FFI
         #
         len_ptr = FFI::MemoryPointer.new :pointer
         vix_error = super(disk_handle, nil, 0, len_ptr)
-        if vix_error != VixDiskLib::VixErrorType[:VIX_OK] &&
-           vix_error != VixDiskLib::VixErrorType[:VIX_E_BUFFER_TOOSMALL]
+        if vix_error != API::VixErrorType[:VIX_OK] && vix_error != API::VixErrorType[:VIX_E_BUFFER_TOOSMALL]
           check_error(vix_error, __method__)
         end
         #
@@ -226,8 +226,7 @@ module FFI
       def self.init(info_logger = nil, warn_logger = nil, error_logger = nil, libDir = nil)
         @info_logger, @warn_logger, @error_logger = info_logger, warn_logger, error_logger
 
-        # vix_error = super(FFI::VixDiskLib::API::VERSION_MAJOR, FFI::VixDiskLib::API::VERSION_MINOR,
-        vix_error = super(VixDiskLib::VERSION_MAJOR, VixDiskLib::VERSION_MINOR,
+        vix_error = super(API::VERSION_MAJOR, API::VERSION_MINOR,
                           logger_for("info"), logger_for("warn"), logger_for("error"), libDir)
         check_error(vix_error, __method__)
         nil
@@ -239,8 +238,7 @@ module FFI
       def self.init_ex(info_logger = nil, warn_logger = nil, error_logger = nil, libDir = nil, configFile = nil)
         @info_logger, @warn_logger, @error_logger = info_logger, warn_logger, error_logger
 
-        # vix_error = super(FFI::VixDiskLib::API::VERSION_MAJOR, FFI::VixDiskLib::API::VERSION_MINOR,
-        vix_error = super(VixDiskLib::VERSION_MAJOR, VixDiskLib::VERSION_MINOR,
+        vix_error = super(API::VERSION_MAJOR, API::VERSION_MINOR,
                           logger_for("info"), logger_for("warn"), logger_for("error"), libDir, configFile)
         check_error(vix_error, __method__)
         nil
@@ -288,8 +286,7 @@ module FFI
       # The VixDiskLib_Read method
       #
       def self.read(disk_handle, start_sector, num_sectors)
-        # buf_size = num_sectors * FFI::VixDiskLib::API::VIXDISKLIB_SECTOR_SIZE
-        buf_size = num_sectors * VixDiskLib::VIXDISKLIB_SECTOR_SIZE
+        buf_size = num_sectors * API::VIXDISKLIB_SECTOR_SIZE
         read_buf = FFI::MemoryPointer.new(buf_size)
         read_buf.clear
         vix_error = super(disk_handle, start_sector, num_sectors, read_buf)
@@ -307,8 +304,7 @@ module FFI
         #
         len_ptr = FFI::MemoryPointer.new :pointer
         vix_error = super(disk_handle, key_ptr, nil, 0, len_ptr)
-        if vix_error != VixDiskLib::VixErrorType[:VIX_OK] &&
-           vix_error != VixDiskLib::VixErrorType[:VIX_E_BUFFER_TOOSMALL]
+        if vix_error != API::VixErrorType[:VIX_OK] && vix_error != API::VixErrorType[:VIX_E_BUFFER_TOOSMALL]
           check_error(vix_error, __method__)
         end
         #
@@ -388,8 +384,8 @@ module FFI
 
       INFO_LOGGER = proc do |fmt, args|
         if @info_logger.nil?
-          if $vim_log
-            $vim_log.info "VMware(VixDiskLib): #{process_log_args(fmt, args)}"
+          if $vix_disk_lib_log
+            $vix_disk_lib_log.info "VMware(VixDiskLib): #{process_log_args(fmt, args)}"
           else
             puts "INFO: VMware(VixDiskLib): #{process_log_args(fmt, args)}"
           end
@@ -400,8 +396,8 @@ module FFI
 
       WARN_LOGGER = proc do |fmt, args|
         if @warn_logger.nil?
-          if $vim_log
-            $vim_log.warn "VMware(VixDiskLib): #{process_log_args(fmt, args)}"
+          if $vix_disk_lib_log
+            $vix_disk_lib_log.warn "VMware(VixDiskLib): #{process_log_args(fmt, args)}"
           else
             puts "WARN: VMware(VixDiskLib): #{process_log_args(fmt, args)}"
           end
@@ -412,8 +408,8 @@ module FFI
 
       ERROR_LOGGER = proc do |fmt, args|
         if @error_logger.nil?
-          if $vim_log
-            $vim_log.error "VMware(VixDiskLib): #{process_log_args(fmt, args)}"
+          if $vix_disk_lib_log
+            $vix_disk_lib_log.error "VMware(VixDiskLib): #{process_log_args(fmt, args)}"
           else
             puts "ERROR: VMware(VixDiskLib): #{process_log_args(fmt, args)}"
           end
@@ -428,15 +424,18 @@ module FFI
 
       def self.process_log_args(fmt, args)
         buf = FFI::MemoryPointer.new(:char, 1024, true)
-        VixDiskLib.vsnprintf(buf, 1024, fmt, args)
+        # LIBC::vsnprintf(buf, 1024, fmt, args)
+        LIBC.vsnprintf(buf, 1024, fmt, args)
         buf.read_string.chomp
       end
 
       def self.check_error(err, method)
-        if VixDiskLib.vix_failed?(err)
+        # if API::vix_failed?(err)
+        if API.vix_failed?(err)
           err_msg = getErrorText(err, nil)
-          err_code = VixDiskLib.vix_error_code(err)
-          err_name = VixDiskLib::VixErrorType[err_code]
+          # err_code = API::vix_error_code(err)
+          err_code = API.vix_error_code(err)
+          err_name = API::VixErrorType[err_code]
           if err_msg.nil? || err_msg.null?
             err_msg = "Error retrieving text of error message for errcode."
             msg = "#{name}##{method} (errcode=#{err_code} - #{err_name}): #{err_msg}"

@@ -32,14 +32,14 @@ module FFI
           end
           break
         rescue LoadError => err
-          load_errors << "ffi-vixdisklib: failed to load #{version} version with error: #{err.message}."
+          load_errors << "ffi-vix_disk_lib: failed to load #{version} version with error: #{err.message}."
           next
         end
       end
 
       unless @load_error || loaded_library.length > 0
         STDERR.puts load_errors.join("\n")
-        @load_error = "ffi-vixdisklib: failed to load any version of VixDiskLib!"
+        @load_error = "ffi-vix_disk_lib: failed to load any version of VixDiskLib!"
       end
       LOADED_LIBRARY = loaded_library
 

@@ -2,7 +2,7 @@ require 'ffi'
 
 module FFI
   module VixDiskLib
-    module API
+    module LIBC
       extend FFI::Library
       ffi_lib FFI::Library::LIBC
 
