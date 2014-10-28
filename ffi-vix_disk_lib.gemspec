@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -- lib/*`.split("\n")
   spec.files        += %w(README.md LICENSE.txt)
   spec.executables   = `git ls-files -- bin/*`.split("\n")
-  spec.test_files    = `git ls-files -- spec/* test/*`.split("\n")
+  spec.test_files    = `git ls-files -- spec/*`.split("\n")
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.3"
