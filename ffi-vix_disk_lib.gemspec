@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = FFI::VixDiskLib::VERSION
   spec.authors       = ["Jerry Keselman", "Rich Oliveri", "Jason Frey"]
   spec.email         = ["jerryk@redhat.com", "roliveri@redhat.com", "jfrey@redhat.com"]
-  spec.description   = %q(Ruby Binding for VMware's VixDiskLib using FFI)
-  spec.summary       = %q(Ruby Binding for VMware's VixDiskLib using FFI)
+  spec.description   = %q(Ruby FFI Binding to VMware VixDiskLib.)
+  spec.summary       = %q(Ruby FFI Binding to VMware VixDiskLib.)
   spec.homepage      = "http://github.com/ManageIQ/ffi-vix_disk_lib"
   spec.license       = "APL 2.0"
 
