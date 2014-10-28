@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q(Ruby Binding for VMware's VixDiskLib using FFI)
   spec.summary       = %q(Ruby Binding for VMware's VixDiskLib using FFI)
   spec.homepage      = "http://github.com/ManageIQ/ffi-vix_disk_lib"
-  spec.license       = "MIT"
+  spec.license       = "APL 2.0"
 
   spec.files         = `git ls-files -- lib/*`.split("\n")
   spec.files        += %w(README.md LICENSE.txt)
