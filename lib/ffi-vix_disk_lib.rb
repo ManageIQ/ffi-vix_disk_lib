@@ -1,0 +1,8 @@
+require 'ffi'
+require 'ffi-vix_disk_lib/version'
+require 'ffi-vix_disk_lib/const'
+require 'ffi-vix_disk_lib/enum'
+require 'ffi-vix_disk_lib/struct'
+require 'ffi-vix_disk_lib/exceptions'
+require 'ffi-vix_disk_lib/api'
+require 'ffi-vix_disk_lib/libc'
