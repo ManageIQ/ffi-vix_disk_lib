@@ -573,16 +573,17 @@ module FFI
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param info [out] Disk information filled up.
       # @return VIX_OK if success, suitable VIX error code otherwise.
-      attach_function :getinfo, :VixDiskLib_GetInfo,
+      attach_function :get_info, :VixDiskLib_GetInfo,
                       [
                         :pointer,      # disk handle
                         :pointer       # disk info
                       ],
                       :VixError
 
-      # Frees memory allocated in VixDiskLib GetInfo
+      # Frees memory allocated in get_info
+      #
       # @param info [in] Disk information to be freed.
-      attach_function :freeinfo, :VixDiskLib_FreeInfo,
+      attach_function :free_info, :VixDiskLib_FreeInfo,
                       [
                         :pointer,      # disk info to free
                       ],

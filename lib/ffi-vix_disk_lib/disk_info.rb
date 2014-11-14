@@ -12,12 +12,12 @@ module FFI
       #
       # Initialize a hash with the disk info for the specified handle
       # using the VixDiskLib_GetInfo method.
-      # This is a helper class for the VixDiskLibApi::get_info method.
+      # This is a helper class for the VixDiskLib::Api::get_info method.
       #
       def initialize(disk_handle)
         ruby_info = {}
         info = FFI::MemoryPointer.new :pointer
-        vix_error = ApiWrapper.getinfo(disk_handle, info)
+        vix_error = ApiWrapper.get_info(disk_handle, info)
         ApiWrapper.check_error(vix_error, __method__)
         real_info = info.get_pointer(0)
 
