@@ -241,12 +241,14 @@ module FFI
       # @return [nil]
       attach_function :exit, :VixDiskLib_Exit, [], :void
 
+      # Free the error message returned by get_error_text.
+      #
       # @scope class
-      # @method freeErrorText(errMsg)
-      # @param errMsg [FFI:Pointer(*String)] Message string returned by getErrorText.
+      # @method free_error_text(errMsg)
+      # @param errMsg [FFI:Pointer(*String)] Message string returned by get_error_text.
       # It is OK to call this function with nil.
       # @return [nil]
-      attach_function :freeErrorText, :VixDiskLib_FreeErrorText,
+      attach_function :free_error_text, :VixDiskLib_FreeErrorText,
                       [
                         :pointer # errMsg to free
                       ],
@@ -255,14 +257,13 @@ module FFI
       # Returns the textual description of an error.
       #
       # @scope class
-      # @method getErrorText(err, locale)
+      # @method get_error_text(err, locale)
       # @param err [VixError] A VIX error code.
       # @param locale [String] Language locale - not currently supported and must be nil.
       # @return [String] The error message string. This should only be deallocated
-      # by freeErrorText.
+      # by free_error_text.
       # Returns NULL if there is an error in retrieving text.
-
-      attach_function :getErrorText, :VixDiskLib_GetErrorText,
+      attach_function :get_error_text, :VixDiskLib_GetErrorText,
                       [
                         :VixError, # err
                         :pointer   # locale
@@ -306,7 +307,6 @@ module FFI
                       ],
                       :pointer             # transport mode
 
-      # Free the error message returned by getErrorText.
       # Initializes VixDiskLib - deprecated, please use initEx.
       #
       # @scope class

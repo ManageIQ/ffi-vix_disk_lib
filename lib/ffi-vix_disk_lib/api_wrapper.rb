@@ -432,7 +432,7 @@ module FFI
       def self.check_error(err, method)
         # if API::vix_failed?(err)
         if API.vix_failed?(err)
-          err_msg = getErrorText(err, nil)
+          err_msg = get_error_text(err, nil)
           # err_code = API::vix_error_code(err)
           err_code = API.vix_error_code(err)
           err_name = API::VixErrorType[err_code]
@@ -441,7 +441,7 @@ module FFI
             msg = "#{name}##{method} (errcode=#{err_code} - #{err_name}): #{err_msg}"
           else
             msg = "#{name}##{method} (errcode=#{err_code} - #{err_name}): #{err_msg.read_string}"
-            freeErrorText(err_msg)
+            free_error_text(err_msg)
           end
           raise VixDiskLibError, "#{msg}"
         end
