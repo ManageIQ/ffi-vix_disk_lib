@@ -1,8 +1,3 @@
-#
-# Initialize a hash with the disk info for the specified handle
-# using the VixDiskLib_GetInfo method.
-# This is a helper class for the VixDiskLibApi::get_info method.
-#
 module FFI
   module VixDiskLib
     class DiskInfo
@@ -14,6 +9,11 @@ module FFI
         info.get_uint32(offset_value + Geometry.offset_of(attribute))
       end
 
+      #
+      # Initialize a hash with the disk info for the specified handle
+      # using the VixDiskLib_GetInfo method.
+      # This is a helper class for the VixDiskLibApi::get_info method.
+      #
       def initialize(disk_handle)
         ruby_info = {}
         info = FFI::MemoryPointer.new :pointer

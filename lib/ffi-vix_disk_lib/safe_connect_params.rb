@@ -2,13 +2,10 @@ module FFI
   module VixDiskLib
     extend API
     extend FFI::Library
+
     class SafeConnectParams
       UidPasswd = API::UidPasswdCreds
       SessionId = API::SessionIdCreds
-      #
-      # Read the contents of a ConnectParams structure
-      # into FFI memory for use when calling out to VixDiskLib
-      #
 
       attr_reader :connect_params
 
@@ -18,6 +15,10 @@ module FFI
         conn_parms.put_pointer(0, memory_pointer)
       end
 
+      #
+      # Read the contents of a ConnectParams structure
+      # into FFI memory for use when calling out to VixDiskLib
+      #
       def initialize(in_conn_parms)
         conn_parms      = FFI::MemoryPointer.new(API::ConnectParams, 1, true)
         @connect_params = conn_parms
@@ -62,6 +63,7 @@ module FFI
         pointer             = creds + API::Creds.offset_of(id_symbol) + UidPasswd.offset_of(name_symbol)
         params[name_symbol] = read_safe_str_from_mem(pointer)
       end
+
       #
       # Read a ConnectParams Creds sub-structure returned from the FFI layer from VixDiskLib_GetConnectParams
       # into a ruby hash.

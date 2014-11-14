@@ -3,14 +3,14 @@ module FFI
     class SafeCreateParams
       extend API
       extend FFI::Library
-  #
-  # Read the contents of a CreateParams structure passed as an argument
-  # into FFI memory which will be allocated to be used when calling out to
-  # VixDiskLib
-  #
 
       attr_reader :create_params
 
+      #
+      # Read the contents of a CreateParams structure passed as an argument
+      # into FFI memory which will be allocated to be used when calling out to
+      # VixDiskLib
+      #
       def initialize(in_create_parms)
         create_parms = FFI::MemoryPointer.new(VixDiskLib::CreateParams, 1, true)
         create_parms_start = create_parms

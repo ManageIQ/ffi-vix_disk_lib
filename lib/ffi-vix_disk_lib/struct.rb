@@ -12,7 +12,7 @@ module FFI
                :sectors,   :uint32
       end
 
-      # Create Params
+      # CreateParams
       class CreateParams < FFI::Struct
         layout :diskType,    DiskType,
                :adapterType, AdapterType,
