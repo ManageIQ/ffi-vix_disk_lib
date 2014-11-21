@@ -1,5 +1,9 @@
 # ffi-vix_disk_lib
 
+[![Gem Version](https://badge.fury.io/rb/ffi-vix_disk_lib.svg)](http://badge.fury.io/rb/ffi-vix_disk_lib)
+[![Code Climate](http://img.shields.io/codeclimate/github/ManageIQ/ffi-vix_disk_lib.svg)](https://codeclimate.com/github/ManageIQ/ffi-vix_disk_lib)
+[![Dependency Status](https://gemnasium.com/ManageIQ/ffi-vix_disk_lib.svg)](https://gemnasium.com/ManageIQ/ffi-vix_disk_lib)
+
 Ruby FFI Binding to VMware VixDiskLib.
 
 ## Installation
