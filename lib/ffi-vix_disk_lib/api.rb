@@ -104,6 +104,7 @@ module FFI
                       :VixError
 
       # Closes the disk.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @return VIX_OK if success, suitable VIX error code otherwise.
       attach_function :close, :VixDiskLib_Close,
@@ -113,6 +114,7 @@ module FFI
                       :VixError
 
       # Connects to a local / remote server.
+      #
       # @param connectParams [in] NULL if manipulating local disks.
       #             For remote case this includes esx hostName and
       #             user credentials.
@@ -173,6 +175,7 @@ module FFI
                       :VixError
 
       # Creates a local disk. Remote disk creation is not supported.
+      #
       # @param connection [in] A valid connection.
       # @param path [in] VMDK file name given as absolute path
       #                  e.g. "c:\\My Virtual Machines\\MailServer\SystemDisk.vmdk".
@@ -191,6 +194,7 @@ module FFI
                       :VixError
 
       # Creates a redo log from a parent disk.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param childPath [in] Redo log file name given as absolute path
       #                  e.g. "c:\\My Virtual Machines\\MailServer\SystemDisk_s0001.vmdk".
@@ -210,6 +214,7 @@ module FFI
                       :VixError
 
       # Breaks an existing connection.
+      #
       # @param connection [in] Valid handle to a (local/remote) connection.
       # @return VIX_OK if success suitable VIX error code otherwise.
       attach_function :disconnect, :VixDiskLib_Disconnect,
@@ -241,12 +246,14 @@ module FFI
       # @return [nil]
       attach_function :exit, :VixDiskLib_Exit, [], :void
 
+      # Free the error message returned by get_error_text.
+      #
       # @scope class
-      # @method freeErrorText(errMsg)
-      # @param errMsg [FFI:Pointer(*String)] Message string returned by getErrorText.
+      # @method free_error_text(errMsg)
+      # @param errMsg [FFI:Pointer(*String)] Message string returned by get_error_text.
       # It is OK to call this function with nil.
       # @return [nil]
-      attach_function :freeErrorText, :VixDiskLib_FreeErrorText,
+      attach_function :free_error_text, :VixDiskLib_FreeErrorText,
                       [
                         :pointer # errMsg to free
                       ],
@@ -255,14 +262,13 @@ module FFI
       # Returns the textual description of an error.
       #
       # @scope class
-      # @method getErrorText(err, locale)
+      # @method get_error_text(err, locale)
       # @param err [VixError] A VIX error code.
       # @param locale [String] Language locale - not currently supported and must be nil.
       # @return [String] The error message string. This should only be deallocated
-      # by freeErrorText.
+      # by free_error_text.
       # Returns NULL if there is an error in retrieving text.
-
-      attach_function :getErrorText, :VixDiskLib_GetErrorText,
+      attach_function :get_error_text, :VixDiskLib_GetErrorText,
                       [
                         :VixError, # err
                         :pointer   # locale
@@ -272,6 +278,7 @@ module FFI
       # Retrieves the list of keys in the metadata table.
       # Key names are returned as list of null-terminated strings,
       # followed by an additional NULL character.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param keys [out, optional]  Keynames buffer, can be NULL.
       # @param maxLen [in] Size of the keynames buffer.
@@ -306,7 +313,6 @@ module FFI
                       ],
                       :pointer             # transport mode
 
-      # Free the error message returned by getErrorText.
       # Initializes VixDiskLib - deprecated, please use initEx.
       #
       # @scope class
@@ -339,11 +345,11 @@ module FFI
       # @param panic [FFI::Pointer(*GenericLogFunc)] Callback for panic.
       # @param libDir [String] Directory location where dependent libs are located.
       # @param configFile [String] Configuration file path in local encoding.
-      # configuration files are of the format
-      # name = "value"
-      # each name/value pair on a separate line. For a detailed
-      # description of allowed values, refer to the
-      # documentation.
+      #     configuration files are of the format
+      #     name = "value"
+      #     each name/value pair on a separate line. For a detailed
+      #     description of allowed values, refer to the
+      #     documentation.
       # @return [VixError] VIX_OK on success, suitable VIX error code otherwise.
       attach_function :init_ex, :VixDiskLib_InitEx,
                       [
@@ -372,6 +378,7 @@ module FFI
                         :pointer       # identity
                       ],
                       :VixError
+
       # Get a list of transport modes known to VixDiskLib. This list is also the
       # default used if VixDiskLib_ConnectEx is called with transportModes set
       # to NULL.
@@ -387,6 +394,7 @@ module FFI
                       :pointer         # list of transport plugins
 
       # Opens a local or remote virtual disk.
+      #
       # @param connection [in] A valid connection.
       # @param path [in] VMDK file name given as absolute path
       #                        e.g. "[storage1] MailServer/SystemDisk.vmdk"
@@ -406,6 +414,7 @@ module FFI
                       :VixError
 
       # Reads a sector range.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param startSector [in] Absolute offset.
       # @param numSectors [in] Number of sectors to read.
@@ -421,6 +430,7 @@ module FFI
                       :VixError
 
       # Writes a sector range.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param startSector [in] Absolute offset.
       # @param numSectors [in] Number of sectors to write.
@@ -436,6 +446,7 @@ module FFI
                       :VixError
 
       # Retrieves the value of a metadata entry corresponding to the supplied key.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param key [in] Key name.
       # @param buf [out, optional] Placeholder for key's value in the metadata store,
@@ -456,6 +467,7 @@ module FFI
                       :VixError
 
       # Creates or modifies a metadata table entry.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param key [in] Key name.
       # @param val [in] Key's value.
@@ -471,6 +483,7 @@ module FFI
       # Deletes all extents of the specified disk link. If the path refers to a
       # parent disk, the child (redo log) will be orphaned.
       # Unlinking the child does not affect the parent.
+      #
       # @param connection [in] A valid connection.
       # @param path [in] Path to the disk to be deleted.
       # @return VIX_OK if success, suitable VIX error code otherwise.
@@ -482,6 +495,7 @@ module FFI
                       :VixError
 
       # Grows an existing disk, only local disks are grown.
+      #
       # @pre The specified disk is not open.
       # @param connection [in] A valid connection.
       # @param path [in] Path to the disk to be grown.
@@ -501,7 +515,9 @@ module FFI
                         :pointer                    # progressCallbackData
                       ],
                       :VixError
+
       # Shrinks an existing disk, only local disks are shrunk.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param progressFunc [in] Callback to report progress (called on the same thread).
       # @param progressCallbackData [in] Opaque pointer passed along with the percent
@@ -516,6 +532,7 @@ module FFI
                       :VixError
 
       # Defragments an existing disk.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param progressFunc [in] Callback to report progress (called on the same thread).
       # @param progressCallbackData [in] Opaque pointer passed along with the percent
@@ -530,6 +547,7 @@ module FFI
                       :VixError
 
       # Renames a virtual disk.
+      #
       # @param srcFileName [in] Virtual disk file to rename.
       # @param dstFileName [in] New name for the virtual disk.
       # @return VIX_OK if success, suitable VIX error code otherwise.
@@ -541,6 +559,7 @@ module FFI
                       :VixError
 
       # Copies a disk with proper conversion.
+      #
       # @param dstConnection [in] A valid connection to access the destination disk.
       # @param dstPath [in] Absolute path for the (new) destination disk.
       # @param srcConnection [in] A valid connection to access the source disk.
@@ -569,26 +588,30 @@ module FFI
                         :bool                  # overWrite
                       ],
                       :VixError
+
       # Retrieves information about a disk.
+      #
       # @param diskHandle [in] Handle to an open virtual disk.
       # @param info [out] Disk information filled up.
       # @return VIX_OK if success, suitable VIX error code otherwise.
-      attach_function :getinfo, :VixDiskLib_GetInfo,
+      attach_function :get_info, :VixDiskLib_GetInfo,
                       [
                         :pointer,      # disk handle
                         :pointer       # disk info
                       ],
                       :VixError
 
-      # Frees memory allocated in VixDiskLib GetInfo
+      # Frees memory allocated in get_info
+      #
       # @param info [in] Disk information to be freed.
-      attach_function :freeinfo, :VixDiskLib_FreeInfo,
+      attach_function :free_info, :VixDiskLib_FreeInfo,
                       [
                         :pointer,      # disk info to free
                       ],
                       :void
 
       # Return the details for the connection.
+      #
       # @param connection [in] A VixDiskLib connection.
       # @param connectParams [out] Details of the connection.
       # @return VIX_OK if success, suitable VIX error code otherwise.
@@ -601,6 +624,7 @@ module FFI
 
       # Free the connection details structure allocated during
       # VixDiskLib_GetConnectParams.
+      #
       # @param connectParams [out] Connection details to be free'ed.
       # @return None.
       attach_function :free_connect_params, :VixDiskLib_FreeConnectParams,
@@ -609,7 +633,8 @@ module FFI
                       ],
                       :void
 
-      # Checks if the child disk chain can be attached to the parent disk cahin.
+      # Checks if the child disk chain can be attached to the parent disk chain.
+      #
       # @param parent [in] Handle to the disk to be attached.
       # @param child [in] Handle to the disk to attach.
       # @return VIX_OK if success, suitable VIX error code otherwise.
@@ -622,6 +647,7 @@ module FFI
 
       # Attaches the child disk chain to the parent disk chain. Parent handle is
       # invalid after attaching and child represents the combined disk chain.
+      #
       # @param parent [in] Handle to the disk to be attached.
       # @param child [in] Handle to the disk to attach.
       # @return VIX_OK if success, suitable VIX error code otherwise.
@@ -633,6 +659,7 @@ module FFI
                       :VixError
 
       # Compute the space (in bytes) required to copy a disk chain.
+      #
       # @param diskHandle [in] Handle to the disk to be copied.
       # @param cloneDiskType [in] Type of the (to be) newly created disk.
       #   If cloneDiskType is VIXDISKLIB_DISK_UNKNOWN, the source disk
@@ -648,6 +675,7 @@ module FFI
                       :VixError
 
       # Check a sparse disk for internal consistency.
+      #
       # @param filename [in] Path to disk to be checked.
       # @param repair [in] TRUE if repair should be attempted, false otherwise.
       # @return VIX_OK if success, suitable VIX error code otherwise.  Note
