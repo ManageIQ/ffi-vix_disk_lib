@@ -37,6 +37,7 @@ module FFI
         get_safe_creds(cred_type, in_conn_parms, @connect_params + API::ConnectParams.offset_of(:creds))
         conn_parms      = @connect_params + API::ConnectParams.offset_of(:port)
         conn_parms.write_uint32(in_conn_parms[:port]) unless in_conn_parms[:port].nil?
+        conn_parms.write_uint32(0) if API::VERSION_MAJOR > 5
         @connect_params
       end
 
