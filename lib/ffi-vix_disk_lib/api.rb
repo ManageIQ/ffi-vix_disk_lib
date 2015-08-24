@@ -19,7 +19,7 @@ module FFI
       # Make sure we load one and only one version of VixDiskLib
       #
       version_load_order = %w( 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2 )
-      bad_versions       = {"5.1.0" => "Disk Open May Core Dump without an SSL Thumbprint"}
+      bad_versions       = {}
       load_errors        = []
       loaded_library     = ""
       version_load_order.each do |version|
