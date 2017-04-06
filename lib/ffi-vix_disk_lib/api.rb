@@ -18,7 +18,7 @@ module FFI
       #
       # Make sure we load one and only one version of VixDiskLib
       #
-      version_load_order = %w( 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2 )
+      version_load_order = %w( 6.5.0 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2 )
       bad_versions       = {}
       load_errors        = []
       loaded_library     = ""
