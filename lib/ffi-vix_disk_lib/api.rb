@@ -26,6 +26,7 @@ module FFI
         begin
           loaded_library = ffi_lib ["vixDiskLib.so.#{version}"]
           VERSION_MAJOR, VERSION_MINOR = loaded_library.first.name.split(".")[2, 2].collect(&:to_i)
+          VERSION = version
           if bad_versions.keys.include?(version)
             loaded_library = ""
             @load_error = "VixDiskLib #{version} is not supported: #{bad_versions[version]}"
@@ -60,6 +61,17 @@ module FFI
       def self.vix_failed?(err)
         err != VixErrorType[:VIX_OK]
       end
+
+      def self.evaluate_versioned_connect_params
+        case VERSION
+        when "6.5.0"
+          ConnectParams_6_5_0
+        else
+          ConnectParams_1_0_0
+        end
+      end
+
+      ConnectParams = evaluate_versioned_connect_params
 
       callback :GenericLogFunc, [:string, :pointer], :void
 
