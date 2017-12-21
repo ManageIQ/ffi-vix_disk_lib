@@ -57,14 +57,26 @@ module FFI
       #
       # Example VM spec:
       # "MyVm/MyVm.vmx?dcPath=Path/to/MyDatacenter&dsName=storage1"
-      class ConnectParams < FFI::Struct
-        layout :vmxSpec,    :pointer,
-               :serverName, :pointer,
-               :thumbPrint, :pointer,
-               :privateUse, :long,
+      class ConnectParams_1_0_0 < FFI::Struct
+        layout :vmxSpec,    :pointer, # URL like spec of the VM.
+               :serverName, :pointer, # Name or IP address of VC / ESX.
+               :thumbPrint, :pointer, # SSL Certificate thumb print.
+               :privateUse, :long,    # This value is ignored.
                :credType,   CredType,
                :creds,      Creds,
-               :port,       :uint32
+               :port,       :uint32   # port to use for authenticating with VC/ESXi host
+      end
+
+      class ConnectParams_6_5_0 < FFI::Struct
+        layout :vmxSpec,     :pointer, # URL like spec of the VM.
+               :serverName,  :pointer, # Name or IP address of VC / ESX.
+               :thumbPrint,  :pointer, # SSL Certificate thumb print.
+               :privateUse,  :long,    # This value is ignored.
+               :credType,    CredType,
+               :creds,       Creds,
+               :port,        :uint32,  # port to use for authenticating with VC/ESXi host
+               :nfcHostPort, :uint32,  # port to use for establishing NFC connection to ESXi host
+               :vimApiVer,   :pointer  # VIM API version to use, private
       end
 
       class Info < FFI::Struct
