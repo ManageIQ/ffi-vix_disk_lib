@@ -10,4 +10,17 @@ describe FFI::VixDiskLib::API do
       expect(err).to eq(described_class::VixErrorType[:VIX_OK])
     end
   end
+
+  context "ConnectParams" do
+    case described_class::VERSION
+    when "6.5.0"
+      it "has vimApiVer" do
+        expect(described_class::ConnectParams.members).to include(:vimApiVer)
+      end
+    else
+      it "doesn't have vimApiVer" do
+        expect(described_class::ConnectParams.members).to_not include(:vimApiVer)
+      end
+    end
+  end
 end
