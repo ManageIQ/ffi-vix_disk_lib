@@ -5,44 +5,43 @@ module FFI
     module API
       extend FFI::Library
 
-      def attach_function(*args)
-        super
+      def self.attach_function(*args)
+        super if available?
       rescue FFI::NotFoundError
         warn "unable to attach #{args.first}"
-      end
-
-      def self.load_error
-        @load_error
       end
 
       #
       # Make sure we load one and only one version of VixDiskLib
       #
       version_load_order = %w( 6.7.0 6.5.0 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2 )
-      bad_versions       = {}
-      load_errors        = []
-      loaded_library     = ""
-      version_load_order.each do |version|
+      bad_versions       = {} # Hardcoded list of known bad versions
+
+      loaded_library = nil
+      loaded_version = version_load_order.detect do |version|
         begin
           loaded_library = ffi_lib ["vixDiskLib.so.#{version}"]
-          VERSION_MAJOR, VERSION_MINOR = loaded_library.first.name.split(".")[2, 2].collect(&:to_i)
-          VERSION = version
-          if bad_versions.keys.include?(version)
-            loaded_library = ""
-            @load_error = "VixDiskLib #{version} is not supported: #{bad_versions[version]}"
+          if bad_versions.include?(version)
+            @load_error = "ffi-vix_disk_lib: VixDiskLib #{version} is not supported: #{bad_versions[version]}"
           end
-          break
-        rescue LoadError => err
-          load_errors << "ffi-vix_disk_lib: failed to load #{version} version with error: #{err.message}."
-          next
+          true
+        rescue LoadError
+          false
         end
       end
+      @load_error = "ffi-vix_disk_lib: failed to load any version of VixDiskLib!" if loaded_library.nil?
 
-      unless @load_error || loaded_library.length > 0
-        STDERR.puts load_errors.join("\n")
-        @load_error = "ffi-vix_disk_lib: failed to load any version of VixDiskLib!"
-      end
       LOADED_LIBRARY = loaded_library
+      VERSION        = loaded_version
+      VERSION_MAJOR, VERSION_MINOR = loaded_library && loaded_library.first.name.split(".")[2, 2].collect(&:to_i)
+
+      def self.load_error
+        @load_error
+      end
+
+      def self.available?
+        !load_error
+      end
 
       # An error is a 64-bit value. If there is no error, then the value is
       # set to VIX_OK. If there is an error, then the least significant bits
