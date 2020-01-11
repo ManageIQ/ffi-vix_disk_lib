@@ -22,11 +22,14 @@ module FFI
       bad_versions       = {}
       load_errors        = []
       loaded_library     = ""
-      version_load_order.each do |version|
+      version_major      = nil
+      version_minor      = nil
+      version            = nil
+      version_load_order.each do |v|
         begin
-          loaded_library = ffi_lib ["vixDiskLib.so.#{version}"]
-          VERSION_MAJOR, VERSION_MINOR = loaded_library.first.name.split(".")[2, 2].collect(&:to_i)
-          VERSION = version
+          loaded_library = ffi_lib ["vixDiskLib.so.#{v}"]
+          version = v
+          version_major, version_minor = loaded_library.first.name.split(".")[2, 2].collect(&:to_i)
           if bad_versions.keys.include?(version)
             loaded_library = ""
             @load_error = "VixDiskLib #{version} is not supported: #{bad_versions[version]}"
@@ -37,6 +40,10 @@ module FFI
           next
         end
       end
+
+      VERSION_MAJOR = version_major
+      VERSION_MINOR = version_minor
+      VERSION       = version
 
       unless @load_error || loaded_library.length > 0
         STDERR.puts load_errors.join("\n")
