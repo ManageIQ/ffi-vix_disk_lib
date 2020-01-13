@@ -2,6 +2,7 @@ CC=gcc
 CFLAGS=-I.
 CFLAGS = -fPIC -O0 -g
 LDFLAGS = -shared
+LN = ln -sf
 SRCS = vixDiskLib.c
 OBJS = ${SRCS:.c=.o}
 TARGET_LIB = libvixDiskLib.so
@@ -15,9 +16,9 @@ ${SRCS:.c=.d}:%.d:%.c
 	${CC} ${CFLAGS} -MM $< >$@
 
 ${TARGET_LIB}.${MAJOR_VERSION}: ${TARGET_LIB}
-	ln -s $^ $@
+	${LN} $^ $@
 ${TARGET_LIB}.${FULL_VERSION}: ${TARGET_LIB}.${MAJOR_VERSION}
-	ln -s $^ $@
+	${LN} $^ $@
 
 ${TARGET_LIB}: ${OBJS}
 	${CC} ${LDFLAGS} -o $@ $^

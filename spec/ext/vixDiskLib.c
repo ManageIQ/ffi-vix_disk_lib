@@ -27,25 +27,11 @@ typedef Bool (*VixDiskLibProgressFunc)(void *progressData,
                                        int percentCompleted);
 typedef void (*VixDiskLibCompletionCB)(void *cbData, VixError result);
 typedef enum {
-   VIXDISKLIB_DISK_MONOLITHIC_SPARSE         = 1,   // monolithic file, sparse
-   VIXDISKLIB_DISK_MONOLITHIC_FLAT           = 2,   // monolithic file,
-                                                    // all space pre-allocated
-   VIXDISKLIB_DISK_SPLIT_SPARSE              = 3,   // disk split into 2GB extents,
-                                                    // sparse
-   VIXDISKLIB_DISK_SPLIT_FLAT                = 4,   // disk split into 2GB extents,
-                                                    // pre-allocated
-   VIXDISKLIB_DISK_VMFS_FLAT                 = 5,   // ESX 3.0 and above flat disks
-   VIXDISKLIB_DISK_STREAM_OPTIMIZED          = 6,   // compressed monolithic sparse
-   VIXDISKLIB_DISK_VMFS_THIN                 = 7,   // ESX 3.0 and above thin provisioned
-   VIXDISKLIB_DISK_VMFS_SPARSE               = 8,   // ESX 3.0 and above sparse disks
-   VIXDISKLIB_DISK_UNKNOWN                   = 256  // unknown type
+   VIXDISKLIB_DISK_UNKNOWN = 256
 } VixDiskLibDiskType;
 
 typedef enum {
-   VIXDISKLIB_ADAPTER_IDE                    = 1,
-   VIXDISKLIB_ADAPTER_SCSI_BUSLOGIC          = 2,
-   VIXDISKLIB_ADAPTER_SCSI_LSILOGIC          = 3,
-   VIXDISKLIB_ADAPTER_UNKNOWN                = 256
+   VIXDISKLIB_ADAPTER_UNKNOWN = 256
 } VixDiskLibAdapterType;
 
 typedef uint64 VixDiskLibSectorType;
@@ -58,11 +44,7 @@ typedef struct {
 } VixDiskLibCreateParams;
 
 typedef enum {
-   VIXDISKLIB_CRED_UID                      = 1, // use userid password
-   VIXDISKLIB_CRED_SESSIONID                = 2, // http session id
-   VIXDISKLIB_CRED_TICKETID                 = 3, // vim ticket id
-   VIXDISKLIB_CRED_SSPI                     = 4, // Windows only - use current thread credentials.
-   VIXDISKLIB_CRED_UNKNOWN                  = 256
+   VIXDISKLIB_CRED_UNKNOWN = 256
 } VixDiskLibCredType;
 
 typedef struct {
@@ -100,9 +82,7 @@ typedef struct {
 } VixDiskLibVStorageObjectSpec;
 
 typedef enum {
-   VIXDISKLIB_SPEC_VMX              = 0,  // VMX
-   VIXDISKLIB_SPEC_VSTORAGE_OBJECT  = 1,  // vStorage Object
-   VIXDISKLIB_SPEC_UNKNOWN          = 2   // must be the last one
+   VIXDISKLIB_SPEC_UNKNOWN = 2
 } VixDiskLibSpecType;
 
 typedef struct {
