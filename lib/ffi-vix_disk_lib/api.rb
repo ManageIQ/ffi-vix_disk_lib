@@ -5,51 +5,29 @@ module FFI
     module API
       extend FFI::Library
 
-      def attach_function(*args)
+      def self.attach_function(*args)
         super
       rescue FFI::NotFoundError
         warn "unable to attach #{args.first}"
       end
 
-      def self.load_error
-        @load_error
-      end
+      candidate_versions  = %w[6.7.0 6.5.0 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2]
+      candidate_libraries = candidate_versions.map { |v| "vixDiskLib.so.#{v}" }
 
-      #
-      # Make sure we load one and only one version of VixDiskLib
-      #
-      version_load_order = %w( 6.7.0 6.5.0 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2 )
-      bad_versions       = {}
-      load_errors        = []
-      loaded_library     = ""
-      version_major      = nil
-      version_minor      = nil
-      version            = nil
-      version_load_order.each do |v|
-        begin
-          loaded_library = ffi_lib ["vixDiskLib.so.#{v}"]
-          version = v
-          version_major, version_minor = loaded_library.first.name.split(".")[2, 2].collect(&:to_i)
-          if bad_versions.keys.include?(version)
-            loaded_library = ""
-            @load_error = "VixDiskLib #{version} is not supported: #{bad_versions[version]}"
-          end
-          break
-        rescue LoadError => err
-          load_errors << "ffi-vix_disk_lib: failed to load #{version} version with error: #{err.message}."
-          next
+      # LD_LIBRARY_PATH is not honored on Mac, so build our own rudimentary version
+      if RbConfig::CONFIG["host_os"] =~ /darwin/ && (env = ENV["LD_LIBRARY_PATH"] || ENV["DYLD_LIBRARY_PATH"])
+        candidate_libraries = candidate_libraries.product(env.split(":")).flat_map do |n, p|
+          [
+            File.join(p, n),
+            File.join(p, FFI.map_library_name(n).chomp(".dylib")),
+            File.join(p, FFI.map_library_name(n))
+          ]
         end
       end
 
-      VERSION_MAJOR = version_major
-      VERSION_MINOR = version_minor
-      VERSION       = version
-
-      unless @load_error || loaded_library.length > 0
-        STDERR.puts load_errors.join("\n")
-        @load_error = "ffi-vix_disk_lib: failed to load any version of VixDiskLib!"
-      end
-      LOADED_LIBRARY = loaded_library
+      LOADED_LIBRARY = ffi_lib(candidate_libraries)
+      VERSION = LOADED_LIBRARY.first.name.chomp(".dylib").split(".").last(3).join(".")
+      VERSION_MAJOR, VERSION_MINOR, = VERSION.split(".").map(&:to_i)
 
       # An error is a 64-bit value. If there is no error, then the value is
       # set to VIX_OK. If there is an error, then the least significant bits
