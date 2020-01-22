@@ -1,17 +1,18 @@
 describe FFI::VixDiskLib::API do
   let(:log)     { lambda { |_string, _pointer| } }
   let(:lib_dir) { nil }
+  let(:version) { ENV.fetch("VDDK_VERSION", "6.7.0") }
 
   it "VERSION" do
-    expect(described_class::VERSION).to eq "6.7.0"
+    expect(described_class::VERSION).to eq version
   end
 
   it "VERSION_MAJOR" do
-    expect(described_class::VERSION_MAJOR).to eq 6
+    expect(described_class::VERSION_MAJOR).to eq Gem::Version.new(version).segments[0]
   end
 
   it "VERSION_MINOR" do
-    expect(described_class::VERSION_MINOR).to eq 7
+    expect(described_class::VERSION_MINOR).to eq Gem::Version.new(version).segments[1]
   end
 
   describe ".init" do
@@ -22,8 +23,16 @@ describe FFI::VixDiskLib::API do
   end
 
   describe "ConnectParams" do
-    it "has vimApiVer" do
-      expect(described_class::ConnectParams.members).to include(:vimApiVer)
+    context "with #{described_class::VERSION}" do
+      if Gem::Version.new(described_class::VERSION) >= Gem::Version.new("6.5.0")
+        it "has vimApiVer" do
+          expect(described_class::ConnectParams.members).to include(:vimApiVer)
+        end
+      else
+        it "doesn't have vimApiVer" do
+          expect(described_class::ConnectParams.members).to_not include(:vimApiVer)
+        end
+      end
     end
   end
 end
