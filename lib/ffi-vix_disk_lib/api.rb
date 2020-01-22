@@ -48,12 +48,7 @@ module FFI
       end
 
       def self.evaluate_versioned_connect_params
-        case VERSION
-        when "6.5.0"
-          ConnectParams_6_5_0
-        else
-          ConnectParams_1_0_0
-        end
+        Gem::Version.new(VERSION) >= Gem::Version.new("6.5.0") ? ConnectParams_6_5_0 : ConnectParams_1_0_0
       end
 
       ConnectParams = evaluate_versioned_connect_params
