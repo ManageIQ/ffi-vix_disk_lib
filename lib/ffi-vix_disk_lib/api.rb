@@ -11,6 +11,14 @@ module FFI
         warn "unable to attach #{args.first}"
       end
 
+      #
+      # Maintain backwards compatibility with the previous method
+      # of loading libvixDiskLib
+      #
+      def self.load_error
+        nil
+      end
+
       candidate_versions  = %w[6.7.0 6.5.0 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2]
       candidate_libraries = candidate_versions.map { |v| "vixDiskLib.so.#{v}" }
 
