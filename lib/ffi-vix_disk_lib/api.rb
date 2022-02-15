@@ -22,8 +22,9 @@ module FFI
       candidate_versions  = %w[7.0.1 7.0.0 6.7.3 6.7.2 6.7.1 6.7.0 6.5.4 6.5.3 6.5.2 6.5.1 6.5.0 6.0.3 6.0.2 6.0.1 6.0.0 5.5.4 5.5.2 5.5.1 5.5.0 5.1.3 5.1.2 5.1.1 5.1.0 5.0.4 5.0.0 1.2.0 1.1.2]
       candidate_libraries = candidate_versions.map { |v| "vixDiskLib.so.#{v}" }
 
-      # LD_LIBRARY_PATH is not honored on Mac, so build our own rudimentary version
-      if RbConfig::CONFIG["host_os"] =~ /darwin/ && (env = ENV["LD_LIBRARY_PATH"] || ENV["DYLD_LIBRARY_PATH"])
+      # LD_LIBRARY_PATH/DYLD_LIBRARY_PATH is not passed to child process on a Mac with SIP
+      # enabled, so build our own rudimentary version based on a different name
+      if RbConfig::CONFIG["host_os"] =~ /darwin/ && (env = ENV["LIBRARY_PATH"])
         candidate_libraries = candidate_libraries.product(env.split(":")).flat_map do |n, p|
           [
             File.join(p, n),
