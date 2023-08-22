@@ -19,7 +19,7 @@ module FFI
         nil
       end
 
-      candidate_versions  = %w[8.0.0 7.0.3 7.0.2 7.0.1 7.0.0 6.7.3 6.7.2 6.7.1 6.7.0 6.5.4 6.5.3 6.5.2 6.5.1 6.5.0 6.0.3 6.0.2 6.0.1 6.0.0]
+      candidate_versions  = %w[8.0.2 8.0.1 8.0.0 7.0.3 7.0.2 7.0.1 7.0.0 6.7.3 6.7.2 6.7.1 6.7.0 6.5.4 6.5.3 6.5.2 6.5.1 6.5.0 6.0.3 6.0.2 6.0.1 6.0.0]
       candidate_libraries = candidate_versions.map { |v| "vixDiskLib.so.#{v}" }
 
       # LD_LIBRARY_PATH/DYLD_LIBRARY_PATH is not passed to child process on a Mac with SIP
