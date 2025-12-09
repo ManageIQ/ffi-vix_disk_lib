@@ -2,8 +2,6 @@
 
 [![Gem Version](https://badge.fury.io/rb/ffi-vix_disk_lib.svg)](http://badge.fury.io/rb/ffi-vix_disk_lib)
 [![CI](https://github.com/ManageIQ/ffi-vix_disk_lib/actions/workflows/ci.yaml/badge.svg)](https://github.com/ManageIQ/ffi-vix_disk_lib/actions/workflows/ci.yaml)
-[![Code Climate](https://codeclimate.com/github/ManageIQ/ffi-vix_disk_lib.svg)](https://codeclimate.com/github/ManageIQ/ffi-vix_disk_lib)
-[![Test Coverage](https://codeclimate.com/github/ManageIQ/ffi-vix_disk_lib/badges/coverage.svg)](https://codeclimate.com/github/ManageIQ/ffi-vix_disk_lib/coverage)
 
 Ruby FFI Binding to VMware VixDiskLib.
 
