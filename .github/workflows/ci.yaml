@@ -34,7 +34,7 @@ jobs:
       LD_LIBRARY_PATH: spec/ext
       VDDK_VERSION: "${{ matrix.vddk-version }}"
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
